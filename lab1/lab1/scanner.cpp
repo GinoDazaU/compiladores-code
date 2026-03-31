@@ -69,7 +69,7 @@ Token* Scanner::nextToken() {
     return token;
 }
 
-/* Misma funcion, usa automatas
+/* 
 
 Token* Scanner::nextToken() {
     Token* token;
@@ -140,6 +140,8 @@ Scanner::~Scanner() { }
 // -----------------------------
 
 void ejecutar_scanner(Scanner* scanner, const string& InputFile) {
+    Token* tok;
+
     // Crear nombre para archivo de salida
     string OutputFileName = InputFile;
     size_t pos = OutputFileName.find_last_of(".");
@@ -155,8 +157,6 @@ void ejecutar_scanner(Scanner* scanner, const string& InputFile) {
     }
 
     outFile << "Iniciando Scanner para archivo: " << InputFile << endl << endl;
-
-    Token* tok;
 
     while (true) {
         tok = scanner->nextToken();
