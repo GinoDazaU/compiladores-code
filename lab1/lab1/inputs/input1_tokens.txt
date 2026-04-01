@@ -1,0 +1,24 @@
+Iniciando Scanner para archivo: inputs\input1.txt
+
+TOKEN(NUM, "4")
+TOKEN(PLUS, "+")
+TOKEN(LPAREN, "(")
+TOKEN(NUM, "5")
+TOKEN(POW, "**")
+TOKEN(NUM, "10")
+TOKEN(RPAREN, ")")
+TOKEN(SEMICOLON, ";")
+TOKEN(NUM, "3")
+TOKEN(PLUS, "+")
+TOKEN(NUM, "10")
+TOKEN(PLUS, "+")
+TOKEN(NUM, "10")
+TOKEN(POW, "**")
+TOKEN(NUM, "5")
+TOKEN(MUL, "*")
+TOKEN(NUM, "10
+")
+TOKEN(END)
+
+Scanner exitoso
+
