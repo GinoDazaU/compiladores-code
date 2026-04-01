@@ -32,6 +32,8 @@ ostream& operator<<(ostream& outs, const Token& tok) {
         case Token::RPAREN:    outs << "TOKEN(RPAREN, \""    << tok.text << "\")"; break;
         case Token::POW:       outs << "TOKEN(POW, \""       << tok.text << "\")"; break;
         case Token::SEMICOLON: outs << "TOKEN(SEMICOLON, \"" << tok.text << "\")"; break;
+        case Token::ID:        outs << "TOKEN(ID, \""        << tok.text << "\")"; break;
+        case Token::FLOAT:     outs << "TOKEN(FLOAT, \""     << tok.text << "\")"; break;
         case Token::ERR:       outs << "TOKEN(ERR, \""       << tok.text << "\")"; break;
         case Token::END:       outs << "TOKEN(END)"; break;
     }

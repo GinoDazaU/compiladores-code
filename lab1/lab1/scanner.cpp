@@ -27,7 +27,6 @@ bool is_white_space(char c) {
 // Ejercicios 1, 2 hechos.
 
 /*
-
 Token* Scanner::nextToken() {
     Token* token;
 
@@ -35,49 +34,61 @@ Token* Scanner::nextToken() {
     while (current < input.length() && is_white_space(input[current])) 
         current++;
 
-    // Fin de la entrada
     if (current >= input.length()) 
         return new Token(Token::END);
 
     char c = input[current];
-
     first = current;
 
-    // Números
+    // --- Lógica para Identificadores (ID) ---
+    if (isalpha(c)) {
+        current++;
+        while (current < input.length() && (isalnum(input[current])))
+            current++;
+        return new Token(Token::ID, input, first, current - first);
+    }
+
+    // --- Lógica para Números (NUM y FLOAT) ---
     if (isdigit(c)) {
         current++;
         while (current < input.length() && isdigit(input[current]))
             current++;
-        token = new Token(Token::NUM, input, first, current - first);
-    }
-
-    else if (current + 1 < input.length() && c == '*' && input[current + 1] == '*') {
-        current++;
-        current++;
-        token = new Token(Token::POW, input, first, current - first);
-    }
-
-    // Operadores
-    else if (strchr("+/-*();", c)) {
-        switch (c) {
-            case '+': token = new Token(Token::PLUS,   c);    break;
-            case '-': token = new Token(Token::MINUS,  c);    break;
-            case '*': token = new Token(Token::MUL,    c);    break;
-            case '/': token = new Token(Token::DIV,    c);    break;
-            case '(': token = new Token(Token::LPAREN, c);    break;
-            case ')': token = new Token(Token::RPAREN, c);    break;
-            case ';': token = new Token(Token::SEMICOLON, c); break;
+        
+        // ¿Es un flotante? (punto seguido de dígitos)
+        if (current < input.length() && input[current] == '.') {
+            current++; // Consumir el '.'
+            while (current < input.length() && isdigit(input[current]))
+                current++;
+            return new Token(Token::FLOAT, input, first, current - first);
         }
-        current++;
+        return new Token(Token::NUM, input, first, current - first);
     }
 
-    // Carácter inválido
-    else {
-        token = new Token(Token::ERR, c);
+    // --- Lógica para Potencia (**) y Operadores ---
+    if (c == '*') {
         current++;
+        if (current < input.length() && input[current] == '*') {
+            current++;
+            return new Token(Token::POW, input, first, current - first);
+        }
+        return new Token(Token::MUL, c);
     }
 
-    return token;
+    // Otros operadores de un solo carácter
+    if (strchr("+/-();", c)) {
+        current++;
+        switch (c) {
+            case '+': return new Token(Token::PLUS, c);
+            case '-': return new Token(Token::MINUS, c);
+            case '/': return new Token(Token::DIV, c);
+            case '(': return new Token(Token::LPAREN, c);
+            case ')': return new Token(Token::RPAREN, c);
+            case ';': return new Token(Token::SEMICOLON, c);
+        }
+    }
+
+    current++;
+    return new Token(Token::ERR, c);
 }
 */
 
@@ -89,63 +100,70 @@ Token* Scanner::nextToken() {
 
     while (true) {
         switch (state) {
-            // ==========================================================
-            // ESTADO INICIAL: Clasificación
-            // ==========================================================
             case 0: 
                 c = nextChar();
                 if (c == ' ' || c == '\t' || c == '\n' || c == '\r') { first = current; state = 0; }
                 else if (c == '\0') return new Token(Token::END);
-                
-                // Casos directos (un solo carácter)
                 else if (c == '(') return new Token(Token::LPAREN, c);
                 else if (c == ')') return new Token(Token::RPAREN, c);
                 else if (c == '+') return new Token(Token::PLUS, c);
                 else if (c == '-') return new Token(Token::MINUS, c);
                 else if (c == '/') return new Token(Token::DIV, c);
                 else if (c == ';') return new Token(Token::SEMICOLON, c);
-
-                // Casos con lógica adicional (Saltan a estados inferiores)
-                else if (c == '*')   state = 10; // Ir a lógica de MULT / POW
-                else if (isdigit(c)) state = 20; // Ir a lógica de NUM
-                
+                else if (c == '*') state = 10;
+                else if (isdigit(c)) state = 20; // Posible NUM o FLOAT
+                else if (isalpha(c)) state = 30; // Posible ID
                 else return new Token(Token::ERR, c);
                 break;
 
-            // ==========================================================
-            // BLOQUE DE POTENCIA / MULTIPLICACIÓN (Tus nuevos estados)
-            // ==========================================================
+            // --- POTENCIA ---
             case 10: 
-                // PISTA: Aquí ya se leyó el primer '*'. 
-                // Debes leer el siguiente y decidir si vas al estado de POW 
-                // o si haces rollback y devuelves un MUL.
                 c = nextChar();
-                if (c == '*') state = 11;
-                else {
-                    rollBack();
-                    rollBack();
-                    c = nextChar();
-                    return new Token(Token::MUL, c);
-                }
-                break;
+                if (c == '*') return new Token(Token::POW, input, first, current - first);
+                rollBack();
+                return new Token(Token::MUL, '*');
 
-            case 11:
-                // Estado para retornar el Token::POW
-                return new Token(Token::POW, input, first, current - first);
-                break;
-
-            // ==========================================================
-            // BLOQUE DE NÚMEROS
-            // ==========================================================
+            // --- NÚMEROS (NUM / FLOAT) ---
             case 20: 
                 c = nextChar();
                 if (isdigit(c)) state = 20;
-                else state = 21;
+                else if (c == '.') state = 22; // Es un flotante
+                else state = 21; // Es un entero
                 break;
 
-            case 21: 
+            case 21: // Fin de Entero
                 rollBack();
                 return new Token(Token::NUM, input, first, current - first);
+
+            case 22: // Parte decimal
+                c = nextChar();
+                if (isdigit(c)) state = 23;
+                else { // Error: punto sin dígitos (ej. "12.")
+                    return new Token(Token::ERR, input, first, current - first);
+                }
+                break;
+
+            case 23:
+                c = nextChar();
+                if (isdigit(c)) state = 23;
+                else state = 24;
+                break;
+
+            case 24: // Fin de Flotante
+                rollBack();
+                return new Token(Token::FLOAT, input, first, current - first);
+
+            // --- IDENTIFICADORES (ID) ---
+            case 30:
+                c = nextChar();
+                if (isalnum(c)) state = 30; // Letras o dígitos después de la primera letra
+                else state = 31;
+                break;
+
+            case 31:
+                rollBack();
+                string keyword = input.substr(first, current - first);
+                return new Token(Token::ID, input, first, current - first);
         }
     }
 }

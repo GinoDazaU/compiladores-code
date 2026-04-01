@@ -10,6 +10,7 @@ class Token {
    public:
     // Tipos de token
     enum Type {
+        ID,
         PLUS,       // +
         MINUS,      // -
         MUL,        // *
@@ -19,6 +20,7 @@ class Token {
         RPAREN,     // )
         SEMICOLON,  // ;
         NUM,        // Número
+        FLOAT,
         ERR,        // Error
         END         // Fin de entrada
     };
