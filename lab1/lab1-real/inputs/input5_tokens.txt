@@ -1,0 +1,18 @@
+Iniciando Scanner para archivo: inputs\input5.txt
+
+TOKEN(SIN, "SIN")
+TOKEN(LPAREN, "(")
+TOKEN(LOG, "LOG")
+TOKEN(LPAREN, "(")
+TOKEN(NUM, "100")
+TOKEN(RPAREN, ")")
+TOKEN(RPAREN, ")")
+TOKEN(PLUS, "+")
+TOKEN(COS, "COS")
+TOKEN(LPAREN, "(")
+TOKEN(BIN, "101")
+TOKEN(RPAREN, ")")
+TOKEN(END)
+
+Scanner exitoso
+

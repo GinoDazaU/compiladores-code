@@ -1,0 +1,13 @@
+---
+:id: 402248097
+:submitters:
+- :name: Fali Ferdinand Araoz Arana
+  :email: fali.araoz@utec.edu.pe
+- :name: Gino Jesús Daza Yalta
+  :email: gino.daza@utec.edu.pe
+:created_at: !ruby/object:ActiveSupport::TimeWithZone
+  utc: 2026-04-01 23:22:12.419250000 Z
+  zone: !ruby/object:ActiveSupport::TimeZone
+    name: America/Los_Angeles
+  time: 2026-04-01 16:22:12.419250000 Z
+:status: processed

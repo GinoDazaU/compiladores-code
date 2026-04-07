@@ -4,24 +4,26 @@
 using namespace std;
 
 // -----------------------------
-// Constructores
+// Constructores Actualizados
 // -----------------------------
 
-Token::Token(Type type) 
-    : type(type), text("") { }
+Token::Token(Type type, int line, int col) 
+    : type(type), text(""), line(line), col(col) { }
 
-Token::Token(Type type, char c) 
-    : type(type), text(string(1, c)) { }
+Token::Token(Type type, char c, int line, int col) 
+    : type(type), text(string(1, c)), line(line), col(col) { }
 
-Token::Token(Type type, const string& source, int first, int last) 
-    : type(type), text(source.substr(first, last)) { }
+Token::Token(Type type, const string& source, int first, int last, int line, int col) 
+    : type(type), text(source.substr(first, last)), line(line), col(col) { }
 
 // -----------------------------
-// Sobrecarga de operador <<
+// Sobrecarga de operador << (Incluyendo ubicación)
 // -----------------------------
 
-// Para Token por referencia
 ostream& operator<<(ostream& outs, const Token& tok) {
+    // Imprimimos la ubicación primero: [Fila:Col]
+    outs << "[" << tok.line << ":" << tok.col << "] ";
+
     switch (tok.type) {
         case Token::PLUS:      outs << "TOKEN(PLUS, \""      << tok.text << "\")"; break;
         case Token::MINUS:     outs << "TOKEN(MINUS, \""     << tok.text << "\")"; break;
@@ -40,8 +42,7 @@ ostream& operator<<(ostream& outs, const Token& tok) {
     return outs;
 }
 
-// Para Token puntero
 ostream& operator<<(ostream& outs, const Token* tok) {
     if (!tok) return outs << "TOKEN(NULL)";
-    return outs << *tok;  // delega al otro
+    return outs << *tok;
 }

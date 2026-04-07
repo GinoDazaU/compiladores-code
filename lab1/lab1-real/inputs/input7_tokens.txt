@@ -1,0 +1,9 @@
+Iniciando Scanner para archivo: inputs\input7.txt
+
+TOKEN(BIN, "10101101")
+TOKEN(DIFF, "!=")
+TOKEN(BIN, "111")
+TOKEN(END)
+
+Scanner exitoso
+
