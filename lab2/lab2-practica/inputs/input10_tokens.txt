@@ -1,12 +1,14 @@
 Iniciando Scanner para archivo: inputs\input10.txt
 
 TOKEN(NUM, "2")
-TOKEN(MUL, "*")
-TOKEN(MUL, "*")
+TOKEN(POW, "**")
 TOKEN(NUM, "5")
 TOKEN(PLUS, "+")
-TOKEN(ERR, "s")
-Caracter invalido
+TOKEN(ID, "sqrt")
+TOKEN(LPAREN, "(")
+TOKEN(NUM, "5")
+TOKEN(RPAREN, ")")
+TOKEN(END)
 
-Scanner no exitoso
+Scanner exitoso
 

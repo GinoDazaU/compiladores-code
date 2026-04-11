@@ -2,7 +2,7 @@ import os
 import subprocess
  
 # Archivos c++
-programa = ["main.cpp", "scanner.cpp", "token.cpp","parser.cpp","ast.cpp"]
+programa = ["main.cpp", "scanner.cpp", "token.cpp", "parser.h","ast.cpp"]
 
 # Compilar
 compile = ["g++"] + programa

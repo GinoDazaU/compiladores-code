@@ -14,12 +14,13 @@ public:
         MINUS,   // -
         MUL,     // *
         DIV,     // /
-        POW,     // ^
+        POW,     // **
         LPAREN,  // (
         RPAREN,  // )
         NUM,     // Número
         ERR,     // Error
-        END      // Fin de entrada
+        END,      // Fin de entrada
+        ID
     };
 
     // Atributos
@@ -29,6 +30,7 @@ public:
     // Constructores
     Token(Type type);
     Token(Type type, char c);
+    Token(Type type, string s);
     Token(Type type, const string& source, int first, int last);
 
     // Sobrecarga de operadores de salida

@@ -1,0 +1,3 @@
+TOKEN(NUM, "123")
+TOKEN(ERR)
+Error: Ultimo simbolo no reconocido

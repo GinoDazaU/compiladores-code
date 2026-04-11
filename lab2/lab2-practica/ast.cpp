@@ -1,6 +1,6 @@
 #include "ast.h"
 #include <iostream>
- 
+
 using namespace std;
 
 // ------------------ Exp ------------------
@@ -12,15 +12,14 @@ string Exp::binopToChar(BinaryOp op) {
         case MINUS_OP: return "-";
         case MUL_OP:   return "*";
         case DIV_OP:   return "/";
+        case POW_OP:   return "**"; // Representación de potencia
         default:       return "?";
     }
 }
 
 // ------------------ BinaryExp ------------------
-BinaryExp::BinaryExp(Exp* l, Exp* r, BinaryOp o)
-    : left(l), right(r), op(o) {}
+BinaryExp::BinaryExp(Exp* l, Exp* r, BinaryOp o) : left(l), right(r), op(o) {}
 
-    
 BinaryExp::~BinaryExp() {
     delete left;
     delete right;
@@ -28,9 +27,7 @@ BinaryExp::~BinaryExp() {
 
 void BinaryExp::toDot(ostream& out, int& id) const {
     int myId = id++;
-    out << "  node" << myId << " [label=\""
-        << Exp::binopToChar(op) << "\"];\n";
-
+    out << "  node" << myId << " [label=\"" << Exp::binopToChar(op) << "\", shape=circle];\n";
     if (left) {
         int leftId = id;
         left->toDot(out, id);
@@ -45,10 +42,31 @@ void BinaryExp::toDot(ostream& out, int& id) const {
 
 // ------------------ NumberExp ------------------
 NumberExp::NumberExp(int v) : value(v) {}
-
 NumberExp::~NumberExp() {}
-
 void NumberExp::toDot(ostream& out, int& id) const {
     int myId = id++;
-    out << "  node" << myId << " [label=\"" << value << "\"];\n";
+    out << "  node" << myId << " [label=\"" << value << "\", shape=box];\n";
+}
+
+// ------------------ IdentifierExp ------------------
+IdentifierExp::IdentifierExp(const string& n) : name(n) {}
+IdentifierExp::~IdentifierExp() {}
+void IdentifierExp::toDot(ostream& out, int& id) const {
+    int myId = id++;
+    out << "  node" << myId << " [label=\"ID: " << name << "\", shape=ellipse, color=blue];\n";
+}
+
+// ------------------ FunctionExp ------------------
+FunctionExp::FunctionExp(const string& n, Exp* a) : name(n), arg(a) {}
+FunctionExp::~FunctionExp() {
+    delete arg; // Limpiar el subárbol del argumento
+}
+void FunctionExp::toDot(ostream& out, int& id) const {
+    int myId = id++;
+    out << "  node" << myId << " [label=\"CALL: " << name << "()\", shape=doubleoctagon, color=red];\n";
+    if (arg) {
+        int argId = id;
+        arg->toDot(out, id);
+        out << "  node" << myId << " -> node" << argId << ";\n";
+    }
 }

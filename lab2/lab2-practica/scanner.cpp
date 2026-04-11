@@ -28,19 +28,17 @@ bool is_white_space(char c) {
 Token* Scanner::nextToken() {
     Token* token;
 
-    // Saltar espacios en blanco
+    // 1. Saltar espacios en blanco
     while (current < input.length() && is_white_space(input[current])) 
         current++;
 
-    // Fin de la entrada
     if (current >= input.length()) 
         return new Token(Token::END);
 
     char c = input[current];
-
     first = current;
 
-    // Números
+    // 2. Números (0-9)
     if (isdigit(c)) {
         current++;
         while (current < input.length() && isdigit(input[current]))
@@ -48,12 +46,30 @@ Token* Scanner::nextToken() {
         token = new Token(Token::NUM, input, first, current - first);
     }
 
-    // Operadores
-    else if (strchr("+/-*()", c)) {
+    // 3. Identificadores y Funciones (a-z, A-Z)
+    else if (isalpha(c)) {
+        current++;
+        while (current < input.length() && (isalnum(input[current]) || input[current] == '_'))
+            current++;
+        token = new Token(Token::ID, input, first, current - first);
+    }
+
+    // 4. Operadores Especiales (Potencia ** vs Multiplicación *)
+    else if (c == '*') {
+        current++;
+        if (current < input.length() && input[current] == '*') {
+            current++;
+            token = new Token(Token::POW, "**");
+        } else {
+            token = new Token(Token::MUL, "*");
+        }
+    }
+
+    // 5. Otros Operadores
+    else if (strchr("+/-()", c)) {
         switch (c) {
             case '+': token = new Token(Token::PLUS,  c); break;
             case '-': token = new Token(Token::MINUS, c); break;
-            case '*': token = new Token(Token::MUL,   c); break;
             case '/': token = new Token(Token::DIV,   c); break;
             case '(': token = new Token(Token::LPAREN,c); break;
             case ')': token = new Token(Token::RPAREN,c); break;
@@ -61,7 +77,7 @@ Token* Scanner::nextToken() {
         current++;
     }
 
-    // Carácter inválido
+    // 6. Carácter inválido
     else {
         token = new Token(Token::ERR, c);
         current++;
@@ -69,8 +85,6 @@ Token* Scanner::nextToken() {
 
     return token;
 }
-
-
 
 
 // -----------------------------
